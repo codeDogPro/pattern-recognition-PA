@@ -61,14 +61,10 @@ def fisher(data1, data2):
     u2 = data2.mean(axis=0)
     S1 = cal_Si(data1, u1)
     S2 = cal_Si(data2, u2)
-    # print(f"_____S1_____\n{S1}")
-    # print(f"_____S2_____\n{S2}")
     Sw = np.matrix(S1 + S2)
-    # print(f"_____Sw_____\n{Sw}")
-    W = np.dot(Sw.I, np.matrix(u1 - u2).T)
-    # print(f"_____W_____\n{W}")
+
+    W = Sw.I * np.matrix(u1 - u2).T
     W0 = -(u1 * W - u2 * W) / 2
-    # print(f"_____W0_____\n{W0}")
     return [W, W0]
 
 
