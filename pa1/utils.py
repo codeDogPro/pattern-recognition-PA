@@ -91,13 +91,11 @@ def train_fisher(data):
 
 
 def validation(cate_map, model, data):
-    correct_num = 0
-    bad_num = 0
-
+    correct_num = bad_num = 0
     label = data.loc[:, 'label'].values
     data_r = data.iloc[:, 0: data.shape[1] - 1].values
 
-    vote_map = np.zeros(len(model))
+    vote_map = np.zeros(len(model) + 1)
     # print(cate_map)
     data_num = data_r.shape[0]
     for i in range(data_num):
@@ -107,7 +105,7 @@ def validation(cate_map, model, data):
             # print(f"res:{res} category_predict:{category} label:{label[i]}")
             vote_map[category] += 1
         ans = vote_map.argmax()
-        if vote_map.max() == 1: #debug
+        if vote_map.max() == len(model) - 2:
             bad_num += 1
         if cate_map[ans] == label[i]:
             correct_num += 1
