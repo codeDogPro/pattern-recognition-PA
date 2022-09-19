@@ -98,7 +98,6 @@ def validation(cate_map, model, data):
         for j in range(len(model)):
             res = data_r[i] * model[j][1][0] - model[j][1][1]
             category = model[j][0][0] if res > 0 else model[j][0][1]
-            # print(f"res:{res} category_predict:{category} label:{label[i]}")
             vote_map[category] += 1
         ans = vote_map.argmax()
         if vote_map.max() == len(model) - 2:
