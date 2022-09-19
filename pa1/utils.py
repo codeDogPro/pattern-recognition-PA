@@ -44,8 +44,11 @@ def data_classify(data):
 
 def cal_Si(data, u):
     data -= u
-    _sum = np.matrix(np.sum(data, axis=0))
-    return _sum.T * _sum
+    ndim = data.shape[1]
+    matrix = np.zeros((ndim, ndim))
+    for i in range(data.shape[0]):
+        matrix += np.matrix(data[i]).T * data[i]
+    return matrix
 
 
 def fisher(data1, data2):
@@ -56,14 +59,15 @@ def fisher(data1, data2):
     u2 = data2.mean(axis=0)
     S1 = cal_Si(data1, u1)
     S2 = cal_Si(data2, u2)
-    print(f"_____S1_____\n{S1}")
-    print(f"_____S2_____\n{S2}")
+    # print(f"_____S1_____\n{S1}")
+    # print(f"_____S2_____\n{S2}")
     Sw = np.matrix(S1 + S2)
-    print(f"_____Sw_____\n{Sw}")
-    print(f"(u1-u2)T\n{np.matrix(u1 - u2).T}")
-    print(f"___Sw.I___\n{Sw.I}")
-    # W = np.dot(Sw.I, np.matrix(u1 - u2).T)
-    # print(f"_____w_____\n{W}")
+    # print(f"_____Sw_____\n{Sw}")
+    W = np.dot(Sw.I, np.matrix(u1 - u2).T)
+    # print(f"_____W_____\n{W}")
+    W0 = (u1 * W - u2 * W) / 2
+    # print(f"_____W0_____\n{W0}")
+    return [W, W0]
 
 
 def train_fisher(data):
@@ -75,13 +79,16 @@ def train_fisher(data):
     train_map = list(combinations(range(len(data)), 2))
     # print(train_map)
     skip_label = data[0].shape[1] - 1
+    models = []
     for i in range(len(train_map)):
         data1 = data[train_map[i][0]].iloc[:, 0: skip_label].values
         data2 = data[train_map[i][1]].iloc[:, 0: skip_label].values
-        fisher(data1, data2)
+        models.append(fisher(data1, data2))
+    print(len(models))
+    return models
 
 
-def validation(data, label):
+def validation(model, data, label):
     pass
 
 
@@ -90,17 +97,15 @@ def run_in_Kfold(data, K):
     print(block_sz)
     data = shuffle(data)
     for i in range(K):
-        test = data[i * block_sz: (i + 1) * block_sz]
-        classified_test = data_classify(test)
-        # print("_______test_________")
-        # show_classified_data(classified_test)
-
         train = pd.concat([data[0: i * block_sz], data[(i + 1) * block_sz:]])
         classified_train = data_classify(train)
         # print("_______train_________")
         # show_classified_data(classified_train)
+        model = train_fisher(classified_train)    # train the model
 
-        train_fisher(classified_train)    # train the model
-
+        test = data[i * block_sz: (i + 1) * block_sz]
+        classified_test = data_classify(test)
+        # print("_______test_________")
+        # show_classified_data(classified_test)
         # label1 = data[train_map[i][0]].loc[:, 'label'].values
 
