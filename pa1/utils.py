@@ -67,7 +67,7 @@ def fisher(data1, data2):
     # print(f"_____Sw_____\n{Sw}")
     W = np.dot(Sw.I, np.matrix(u1 - u2).T)
     # print(f"_____W_____\n{W}")
-    W0 = (u1 * W - u2 * W) / 2
+    W0 = -(u1 * W - u2 * W) / 2
     # print(f"_____W0_____\n{W0}")
     return [W, W0]
 
