@@ -20,7 +20,7 @@ def main():
     print(args.dataset, args.K)
 
     data = load_dataset(args.dataset)
-    run_in_Kfold(data, args.K)
+    run_by_Kfold(data, args.K)
 
 
 if __name__ == '__main__':
