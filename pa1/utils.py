@@ -101,10 +101,13 @@ def validation(cate_map, model, data):
             category = model[j][0][0] if res > 0 else model[j][0][1]
             vote_map[category] += 1
         ans = vote_map.argmax()
+        # print(f"predict:{cate_map[ans]}  label:{label[i]}")
         if vote_map.max() == len(model) - 2:
             bad_num += 1
         if cate_map[ans] == label[i]:
             correct_num += 1
+        # else:
+            # print("wrong!")
         vote_map.fill(0)
     # print("bad_num:", bad_num)
     return correct_num / data_num
