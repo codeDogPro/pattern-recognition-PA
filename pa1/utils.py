@@ -64,7 +64,8 @@ def fisher(data1, data2):
     Sw = np.matrix(S1 + S2)
 
     W = Sw.I * np.matrix(u1 - u2).T
-    W0 = -(u1 * W - u2 * W) / 2
+    W0 = (u1 * W + u2 * W) / 2
+    # print(f"____w0____:{W0}")
     return [W, W0]
 
 
@@ -105,7 +106,7 @@ def validation(cate_map, model, data):
         if cate_map[ans] == label[i]:
             correct_num += 1
         vote_map.fill(0)
-    print("bad_num:", bad_num)
+    # print("bad_num:", bad_num)
     return correct_num / data_num
 
 
