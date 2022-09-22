@@ -45,6 +45,9 @@ def data_classify(data):
 
 
 def cal_Si(data, u):
+    """
+    calculate the Si matrix and return it.
+    """
     data -= u
     ndim = data.shape[1]
     matrix = np.zeros((ndim, ndim))
@@ -65,7 +68,6 @@ def fisher(data1, data2):
 
     W = Sw.I * np.matrix(u1 - u2).T
     W0 = (u1 * W + u2 * W) / 2
-    # print(f"____w0____:{W0}")
     return [W, W0]
 
 
@@ -73,7 +75,7 @@ def train_fisher(data):
     """
     This function is used to train data with multiple categories
     :param data: data map with 'n' categories
-    :return: discriminant function
+    :return: discriminant function set   .eg  [[w*_1,w0_1], [w*_2, w0_2],.....]
     """
     train_map = list(combinations(range(len(data)), 2))
 
@@ -88,6 +90,15 @@ def train_fisher(data):
 
 
 def validation(cate_map, model, data):
+    """
+    validate the model by test_data, which divede by k-fold.
+    it will return the correct rate.
+    :param cate_map: the categories map that the data have.
+                     eg. [[0] = "cate1", [1] = "cate2", ....].
+    :param model:  model that to be tested.
+    :param data:  the test_data.
+    :return: the correct rate
+    """
     correct_num = bad_num = 0
     label = data.loc[:, 'label'].values
     data_r = data.iloc[:, 0: data.shape[1] - 1].values
@@ -114,6 +125,12 @@ def validation(cate_map, model, data):
 
 
 def run_by_Kfold(data, K):
+    """
+    this function is used to train model,
+    validate the model with k-fold cross validation.
+    :param data: dataset to be used
+    :param K: num of k
+    """
     assert(K != 0)
 
     block_sz = int(data.shape[0] / K)
