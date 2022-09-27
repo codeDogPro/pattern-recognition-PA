@@ -128,8 +128,8 @@ def run_by_Kfold(data, K):
     """
     this function is used to train model,
     validate the model with k-fold cross validation.
-    :param data: dataset to be used
-    :param K: num of k
+    :param data: dataset to be used.
+    :param K: num of k.
     """
     assert(K != 0)
 
