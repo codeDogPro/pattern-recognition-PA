@@ -1,47 +1,7 @@
-import pandas as pd
-import numpy as np
 from sklearn.utils import shuffle
 from itertools import combinations
-
-
-def load_dataset(path):
-    data = pd.read_csv(path)
-    return data
-
-
-def show_classified_data(data):
-    print("______classified_data_______")
-    print("category num: " + str(len(data)))
-    for i in range(len(data)):
-        label_col = data[i].shape[1] - 1
-        print("label: " + data[i].iloc[0, label_col])
-        print(data[i])
-
-
-def data_classify(data):
-    """"
-    data: unclassified data(dataframe)
-    return: classified data array, which contains N dataframe
-    """
-    classified_data = []
-    cate_map = []
-
-    data = data.sort_values(by='label')
-
-    label_col = data.shape[1] - 1
-    label = data.iloc[0, label_col]
-    cate_map.append(label)
-    l_bound = 0
-    for i in range(data.shape[0]):
-        if data.iloc[i, label_col] == label:
-            continue
-        else:
-            classified_data.append(data[l_bound: i])
-            l_bound = i
-            label = data.iloc[i, label_col]
-            cate_map.append(label)
-    classified_data.append(data[l_bound:])
-    return [classified_data, cate_map]
+from utils import *
+import numpy as np
 
 
 def cal_Si(data, u):
@@ -86,6 +46,7 @@ def train_fisher(data):
         data2 = data[train_map[i][1]].iloc[:, 0: skip_label].values
         model.append([train_map[i], fisher(data1, data2)])
         # print(f"____models____:\n{model[i][1][0]}")
+        print(len(model[i][1][0]))
     return model
 
 
@@ -138,12 +99,10 @@ def run_by_Kfold(data, K):
     total_correct_rate = 0
     for i in range(K):
         train = pd.concat([data[0: i * block_sz], data[(i + 1) * block_sz:]])
-        data_pkg = data_classify(train)
-        classified_train = data_pkg[0]
+        classified_train, cate_map = data_classify(train)
         model = train_fisher(classified_train)    # train the model
 
         test = data[i * block_sz: (i + 1) * block_sz]
-        cate_map = data_pkg[1]
         total_correct_rate += validation(cate_map, model, test)
         print(total_correct_rate / (i + 1))
     total_correct_rate /= K

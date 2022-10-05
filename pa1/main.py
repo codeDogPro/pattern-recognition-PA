@@ -1,6 +1,6 @@
 import argparse
-from utils import *
-
+import utils
+import fisher_utils
 
 def main():
     parser = argparse.ArgumentParser(description='Fisher classifier')
@@ -18,8 +18,8 @@ def main():
 
     print(args.dataset, args.K)
 
-    data = load_dataset(args.dataset)
-    run_by_Kfold(data, args.K)
+    data = utils.load_dataset(args.dataset)
+    fisher_utils.run_by_Kfold(data, args.K)
 
 
 if __name__ == '__main__':
