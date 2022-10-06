@@ -1,5 +1,6 @@
 import utils
-import pandas as pd
+import numpy as np
+from collections import Counter
 
 
 class KnnModel(object):
@@ -10,7 +11,8 @@ class KnnModel(object):
 
     def train(self, train_data, K=5):
         label = train_data.shape[1]
-        self.model_data, self.model_label = train_data[:, 0:label - 1], train_data[:label]
+        self.model_data, self.model_label = train_data[:, :label-1], train_data[:, label-1:]
+        self.model_data = np.matrix(self.model_data, dtype=np.float64)
         self.K = K
 
     def train_fisher(self, train_data, K=5):
@@ -18,17 +20,29 @@ class KnnModel(object):
 
     def validation(self, test):
         label = test.shape[1]
-        test_data, test_label = test[:, 0:label - 1], test[:, label - 1:label]
+        test_data, test_label = test[:, :label-1], test[:, label-1:]
+        test_data = np.matrix(test_data, dtype=np.float64)
         correct_cnt = 0
         for i in range(test.shape[0]):
             result = self.predict(test_data[i])
+            print('label:', test_label[i])
             if result == test_label[i]:
                 correct_cnt += 1
         return correct_cnt / test.shape[0]
 
     def predict(self, data):
-        self.model_data -= data
-        return 0
+        diff = self.model_data - data
+        distance = np.linalg.norm(diff, axis=1, keepdims=True)
+        sort_index = distance.argsort(axis=0)[:self.K]
+        # print("________sorted_index:\n", sort_index)
+        selected_label = self.model_label[sort_index][:, 0]
+        print("________selected_label:\n", selected_label)
+        k_pool = list()
+        for label in enumerate(selected_label):
+            k_pool.append(str(label))
+        result = Counter(k_pool).most_common(1)[0]
+        print("result: ", result[0])
+        return result[0]
 
 
 def run_with_KFold(data, K_split, K_near, use_fisher, Log):

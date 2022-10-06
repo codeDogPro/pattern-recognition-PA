@@ -1,10 +1,27 @@
-from sklearn.model_selection import KFold
 import pandas as pd
+from sklearn.model_selection import KFold
 
 
 def load_dataset(path):
-    data = pd.read_csv(path)
+    """
+    # TODO: according to the different dataset format use specific function
+    :param path: dataset path
+    :return: loaded data
+    """
+    if path.find('.csv') != -1:
+        data = pd.read_csv(path)
+    elif path.find('.h5'):
+        data = load_h5(path)
     return data
+
+
+def load_h5(path):
+    import h5py
+    with h5py.File(path, 'r') as hf:
+        train = hf.get('train')
+        test = hf.get('test')
+        data = [train, test]
+        return data
 
 
 def show_classified_data(data):
