@@ -25,8 +25,7 @@ class KnnModel(object):
         correct_cnt = 0
         for i in range(test.shape[0]):
             result = self.predict(test_data[i])
-            print('label:', test_label[i])
-            if result == test_label[i]:
+            if result == str(test_label[i]):
                 correct_cnt += 1
         return correct_cnt / test.shape[0]
 
@@ -34,15 +33,14 @@ class KnnModel(object):
         diff = self.model_data - data
         distance = np.linalg.norm(diff, axis=1, keepdims=True)
         sort_index = distance.argsort(axis=0)[:self.K]
-        # print("________sorted_index:\n", sort_index)
         selected_label = self.model_label[sort_index][:, 0]
-        print("________selected_label:\n", selected_label)
+        # print("________sorted_index:\n", sort_index)
+        # print("________selected_label:\n", selected_label)
         k_pool = list()
-        for label in enumerate(selected_label):
-            k_pool.append(str(label))
-        result = Counter(k_pool).most_common(1)[0]
-        print("result: ", result[0])
-        return result[0]
+        for i in range(selected_label.shape[0]):
+            k_pool.append(str(selected_label[i]))
+        result = Counter(k_pool).most_common(1)[0][0]
+        return result
 
 
 def run_with_KFold(data, K_split, K_near, use_fisher, Log):

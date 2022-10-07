@@ -21,6 +21,7 @@ def load_h5(path):
         train = hf.get('train')
         test = hf.get('test')
         data = [train, test]
+        print(train.get('data')[:])
         return data
 
 
