@@ -13,8 +13,8 @@ def main():
 
     print(args.dataset, args.K_split, args.K_near, args.use_fisher, args.Log)
     data = utils.load_dataset(args.dataset)
-    # run_with_KFold(data, args.K_split, args.K_near, args.use_fisher, args.Log)
-
+    if args.K_split:
+        run_with_KFold(data, args.K_split, args.K_near, args.use_fisher, args.Log)
 
 
 if __name__ == '__main__':

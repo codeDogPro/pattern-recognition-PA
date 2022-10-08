@@ -4,7 +4,6 @@ from sklearn.model_selection import KFold
 
 def load_dataset(path):
     """
-    # TODO: according to the different dataset format use specific function
     :param path: dataset path
     :return: loaded data
     """
@@ -21,8 +20,12 @@ def load_h5(path):
         train = hf.get('train')
         test = hf.get('test')
         data = [train, test]
-        print(train.get('data')[:])
+        # print(train.get('data')[:])
         return data
+
+
+def sprt_h5(data):
+    return data.get('data')[:], data.get('target')[:]
 
 
 def show_classified_data(data):
@@ -76,16 +79,16 @@ def Kfold_model(data=None, K_split=5, K_near=5, use_fisher=False, model_class=No
     kf = KFold(K_split, shuffle=True)
     total_accuracy = 0
     for train_index, test_index in kf.split(data):
-        data_train, data_test = data.values[train_index], data.values[test_index]
-        # print("TRAIN:", train_index, "TEST:", test_index)
-        # print("______data_train______\n", data_train.shape)
-        # print("______data_test______\n", data_test.shape)
+        train, test = data.values[train_index], data.values[test_index]
+        label_index = train.shape[1]
+        train_data, train_label = train[:, :label_index - 1], train[:, label_index - 1:]
+        test_data, test_label = test[:, :label_index - 1], test[:, label_index - 1:]
 
         if use_fisher:
-            model_class.train_fisher(data_train, K_near)
+            model_class.train_fisher(train_data, train_label, K_near)
         else:
-            model_class.train(data_train, K_near)
-        accuracy = model_class.validation(data_test)
+            model_class.train(train_data, train_label, K_near)
+        accuracy = model_class.validation(test_data, test_label)
         total_accuracy += accuracy
         if Log:
             print("currect rate:", accuracy)
