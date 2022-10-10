@@ -16,12 +16,12 @@ def load_dataset(path):
 
 def load_h5(path):
     import h5py
-    with h5py.File(path, 'r') as hf:
-        train = hf.get('train')
-        test = hf.get('test')
-        data = [train, test]
-        # print(train.get('data')[:])
-        return data
+    hf = h5py.File(path, 'r')
+    train = hf.get('train')
+    test = hf.get('test')
+    data = [train, test]
+    # print(train.get('data')[:])
+    return data
 
 
 def sprt_h5(data):

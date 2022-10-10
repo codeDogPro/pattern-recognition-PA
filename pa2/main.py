@@ -15,6 +15,14 @@ def main():
     data = utils.load_dataset(args.dataset)
     if args.K_split:
         run_with_KFold(data, args.K_split, args.K_near, args.use_fisher, args.Log)
+    else:
+        # for usps dataset that not easy to use KFold
+        train_data, train_label = utils.sprt_h5(data[0])
+        test_data, test_label = utils.sprt_h5(data[1])
+        model = KnnModel()
+        model.train(train_data, train_label)
+        accuracy = model.validation(test_data, test_label)
+        print("accuracy:", accuracy)
 
 
 if __name__ == '__main__':
