@@ -8,6 +8,7 @@ def main():
     while True:
         # read image (give interface to user to pick the pictures in their computer)
         image = select_picture()
+
         # put it into model and get all bboxs
         bboxs = model(image)
 
