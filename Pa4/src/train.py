@@ -7,8 +7,12 @@ from dataset import ObjectDetectionDataset
 from utils import *
 
 
-def main():
+def train():
     pass
+
+
+def main():
+    train()
 
 
 if __name__ == '__main__':

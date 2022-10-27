@@ -1,20 +1,23 @@
 import torch.nn as nn
+from torchvision.ops import MultiScaleRoIAlign
+from torchvision.models import alexnet, vgg16
 from utils import SelectiveSearch
 
 
 class ObjectDetectionModel(nn.Module):
-    def __init__(self):
+    def __init__(self, numclass):
         super(ObjectDetectionModel, self).__init__()
-        self.conv_layers = nn.Sequential(
-
+        alex = alexnet(pretrained=True)
+        self.features = alex.features
+        self.roi_layer = MultiScaleRoIAlign(
+            # featmap_names=[0],
+            # output_size=7,
+            # sampling_ratio=2
         )
-        self.rio_layer = None
-        self.linear_layers = nn.Sequential(
+        self.classifier = alex.classifier
+        self.bbox_reg = nn.Linear(numclass, numclass * 4)
 
-        )
-        self.softmax_layer = nn.Softmax()
-
-    def forward(self, input_):
-        feature_map = self.conv_layers(input_)
-        region_proposals = SelectiveSearch(feature_map)
+    def forward(self, x):
+        feature_map = self.features(x)
+        # region_proposals = SelectiveSearch(feature_map)
         # TODO: classify all the region_proposals and regression the final windows
