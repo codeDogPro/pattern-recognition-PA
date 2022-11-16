@@ -1,12 +1,15 @@
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
 
 
-def load_dataset(path):
+def load_dataset(path: str) -> pd.DataFrame:
     """
     :param path: dataset path
     :return: loaded data
     """
+    assert path is not None
     if path.find('.csv') != -1:
         data = pd.read_csv(path)
     elif path.find('.h5'):
@@ -42,8 +45,7 @@ def data_classify(data):
     data: unclassified data(dataframe)
     return: classified data array, which contains N dataframe
     """
-    classified_data = []
-    cate_map = []
+    classified_data, cate_map = [], []
 
     data = data.sort_values(by='label')
 
@@ -63,7 +65,7 @@ def data_classify(data):
     return classified_data, cate_map
 
 
-def Kfold_model(data=None, K_split=5, K_near=5, use_fisher=False, model_class=None, Log=False):
+def Kfold_model(data, K_split=5, K_near=5, use_fisher=False, model_class=None, Log=False):
     """
     This method use K-fold cross validation to validate the model
     :param data: dataset
@@ -74,7 +76,7 @@ def Kfold_model(data=None, K_split=5, K_near=5, use_fisher=False, model_class=No
     :param Log: wether to log everything
     :return: average acurracy
     """
-    # assert data and model_class is not None
+    assert data is not None
 
     kf = KFold(K_split, shuffle=True)
     total_accuracy = 0
@@ -93,3 +95,8 @@ def Kfold_model(data=None, K_split=5, K_near=5, use_fisher=False, model_class=No
         if Log:
             print("currect rate:", accuracy)
     return total_accuracy / K_split
+
+
+def show_result_plot(data: np.ndarray):
+    plt.plot(data)
+    plt.show()
