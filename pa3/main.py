@@ -1,6 +1,6 @@
 from kmeans import kmeans, fcm
 import argparse
-from utils import load_dataset, show_result_plot
+from utils import load_dataset, use_pca, show_result_plot
 
 
 def main():
@@ -14,11 +14,16 @@ def main():
     data, label = dataset[:, :4], dataset[:, 4:]
 
     clusters = kmeans(data, args.k)
-    for i in range(args.k):
-        print(clusters[i].dot_list)
+    import numpy as np
+    all_dots, colors = np.array(None), None
+    for i, cluster in enumerate(clusters):
+        decomp_result = use_pca(cluster.dot_list, ndim=2)
+        # print(f"class{i}:\n{decomp_result}")
+        if i != 0:
+            np.append(decomp_result)
 
-    _kmeans = KMeans(n_clusters=3, random_state=123).fit(iris_dataScale)  # 构建并训练模型
-    fowlkes_mallows_score()
+    print(all_dots)
+    # show_result_plot(decomp_result)
 
 
 if __name__ == '__main__':

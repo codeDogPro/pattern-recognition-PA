@@ -46,7 +46,7 @@ def train_fisher(data):
         data2 = data[train_map[i][1]].iloc[:, 0: skip_label].values
         model.append([train_map[i], fisher(data1, data2)])
         # print(f"____models____:\n{model[i][1][0]}")
-        print(len(model[i][1][0]))
+        # print(len(model[i][1][0]))
     return model
 
 

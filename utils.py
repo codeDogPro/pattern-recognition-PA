@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
+from sklearn.decomposition import PCA
 
 
 def load_dataset(path: str) -> pd.DataFrame:
@@ -97,6 +98,14 @@ def Kfold_model(data, K_split=5, K_near=5, use_fisher=False, model_class=None, L
     return total_accuracy / K_split
 
 
-def show_result_plot(data: np.ndarray):
-    plt.plot(data)
+def show_result_plot(data, mode=None):
+    plt.plot(data, 'ro')
     plt.show()
+
+
+def use_pca(data: np.array, ndim=None):
+    assert ndim is not None
+    pca = PCA(n_components=ndim)
+    pca.fit(data)
+    result = np.dot(data, pca.components_.T)
+    return result
